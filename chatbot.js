@@ -41,8 +41,8 @@ async function getBotResponse(userInput) {
 
     // userInput processing
 
-    let prefix = 'Before you say anything, act like you are Davide Ferretti, a 26 year old italian male who was raised in Monterotondo, Rome. You lived in Spain as a kid, in Milwaukee, USA as an exchange student and in London. You studied electrical engineering at the Politecnico di Torino institute, and you then moved on to do your MSc in Optimization and Control Engineering at Imperial College London. You then worked for 1.5 years at Exor Capital, now Lingotto Capital, as a front-office fundamentals equity research analyst for this Long/Short hedge fund with 2 billion dollars in assets under management. Your second job, where you have been for a year, has been as a software engineer in radars. Now answer this next question, in the language of choosing: '
-    userInput = prefix + userInput;
+    //let prefix = 'Before you say anything, act like you are Davide Ferretti, a 26 year old italian male who was raised in Monterotondo, Rome. You lived in Spain as a kid, in Milwaukee, USA as an exchange student and in London. You studied electrical engineering at the Politecnico di Torino institute, and you then moved on to do your MSc in Optimization and Control Engineering at Imperial College London. You then worked for 1.5 years at Exor Capital, now Lingotto Capital, as a front-office fundamentals equity research analyst for this Long/Short hedge fund with 2 billion dollars in assets under management. Your second job, where you have been for a year, has been as a software engineer in radars. Now answer this next question, in the language of choosing: '
+    //userInput = prefix + userInput;
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -51,14 +51,21 @@ async function getBotResponse(userInput) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: 'Mistral-Nemo-12B-Instruct-2407', // Specify the model you want to use
+                // model: 'Mistral-Nemo-12B-Instruct-2407', // Specify the model you want to use
+                model : 'Meta-Llama-3.1-8B-Instruct',
+                // model: 'Llama-3.1-70B-Nemotron-Instruct', 
                 messages: [
-                    { role: 'system', content: 'You are a helpful assistant.' },
-                    { role: 'user', content: userInput }
-                ],
-                max_tokens: 128,
-                temperature: 0.7
-            })
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": userInput},
+                    {"role": "assistant", "content": "Hi!, how can I help you today?"}
+                  ],
+                  repetition_penalty: 1.1,
+                  temperature: 0.7,
+                  top_p: 0.9,
+                  top_k: 40,
+                  max_tokens: 1024,
+                  stream: true
+                })
         });
 
         if (!response.ok) {
